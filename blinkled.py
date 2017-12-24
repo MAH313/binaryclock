@@ -1,3 +1,6 @@
+__version__ = 0.1
+__author__ = "Mark Hongerkamp <mark313@live.nl>"
+
 import RPi.GPIO as GPIO
 from datetime import datetime
 import math
