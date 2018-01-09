@@ -1,9 +1,11 @@
+"""code for the binary clock"""
+
 __version__ = 0.1
 __author__ = "Mark Hongerkamp <mark313@live.nl>"
 
-import RPi.GPIO as GPIO
 from datetime import datetime
 import math
+import RPi.GPIO as GPIO
 
 # Use pin numbers, not GPIO numbers
 GPIO.setmode(GPIO.BOARD)
@@ -17,23 +19,29 @@ maxValue = math.pow(2, len(pins))
 # set up the GPIO channels
 for i in xrange(0, len(pins)):
   GPIO.setup(pins[i], GPIO.OUT)
- 
+
+def displayBinary(pinArray, value):
+  """convert number value"""
+  for i in xrange(len(pinArray)-1, -1, -1):
+    if value >= (math.pow(2, i) or 1):
+      GPIO.output(pinArray[i], True)
+      value = value - math.pow(2, i)
+    else:
+      GPIO.output(pinArray[i], False)
+
 #check for keyboardInterrupt
 try:
   while True:
     #get the current amount of seconds
     date = datetime.now()
-    sec = int(date.strftime("%S"))
-    
-    #convert seconds to binary display
-    for i in xrange(len(pins)-1, -1, -1):
-      if sec >= (math.pow(2,i) or 1):
-        GPIO.output(pins[i], True)
-        sec = sec - math.pow(2, i)
-      else:
-        GPIO.output(pins[i], False)
+    seconds = int(date.strftime("%S"))
+    minutes = int(date.strftime("%M"))
+    hours = int(date.strftime("%H"))
 
-except (KeyboardInterrupt):
+    #convert seconds to binary display
+    displayBinary(pins, seconds)
+
+except KeyboardInterrupt:
   #clean and reset all gpio pins and outputs
   GPIO.cleanup()
   print 'Ended Program: keyboard interrupt'
