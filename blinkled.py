@@ -11,7 +11,7 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BOARD)
 
 #active pins
-pins = [[8, 12, 18, 24, 28, 36],  #seconds
+pins = [[8, 12, 18, 24, 29, 36],  #seconds
         [10, 16, 22, 26, 32, 38],  #minutes
         [3, 5, 7, 11, 13]]  #hours
 
