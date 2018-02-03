@@ -4,6 +4,7 @@ __version__ = 0.2
 __author__ = "Mark Hongerkamp <mark313@live.nl>"
 
 from datetime import datetime
+import time
 import math
 import RPi.GPIO as GPIO
 
@@ -36,6 +37,13 @@ def displayBinary(pinArray, value):
 
 #check for keyboardInterrupt
 try:
+  #startup check
+  for i in xrange(0, len(pins)):
+    for j in xrange(0, len(pins[i])):
+      GPIO.output(pins[i][j], True)
+
+  time.sleep(1)
+
   while True:
     #get the current amount of seconds
     date = datetime.now()
