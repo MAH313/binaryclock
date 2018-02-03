@@ -18,7 +18,7 @@ pins = [[8, 12, 18, 24, 29, 36],  #seconds
 
 #time offsets
 secondOffset = 0
-minuteOffset = 50
+minuteOffset = 0
 hourOffset = 0
 
 # set up the GPIO channels
@@ -38,6 +38,9 @@ def displayBinary(pinArray, value):
 #check for keyboardInterrupt
 try:
   #startup check
+  date = datetime.now()
+  print "start time is %s" % date.strftime("%H %M %S")
+
   for i in xrange(0, len(pins)):
     for j in xrange(0, len(pins[i])):
       GPIO.output(pins[i][j], True)
