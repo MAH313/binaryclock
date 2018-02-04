@@ -1,11 +1,12 @@
 """code for the binary clock"""
 
-__version__ = 1.0
+__version__ = 1.2
 __author__ = "Mark Hongerkamp <mark313@live.nl>"
 
 from datetime import datetime
 import time
 import math
+import json
 import RPi.GPIO as GPIO
 
 # Use board numbers, not GPIO numbers
@@ -32,11 +33,13 @@ modeDown = False
 setDown = False
 mode = "none"
 
+SaveFile = "saveFile"
+
 #time offsets
-minuteOffset = 0
-hourOffset = 0
+Offset = [0, 0]
 
-
+with open(SaveFile, 'r') as F:
+  Offset = json.load(F)
 
 def displayBinary(pinArray, value):
   """convert number value"""
@@ -51,7 +54,7 @@ def displayBinary(pinArray, value):
 try:
   #startup check
   date = datetime.now()
-  print "start time is %s" % date.strftime("%H:%M:%S")
+  print "start time is %s:%s:%s" % (date.strftime("%H")+Offset[0], date.strftime("%M")+Offset[1], date.strftime("%S"))
 
   for i in xrange(0, len(pins)):
     for j in xrange(0, len(pins[i])):
@@ -64,8 +67,8 @@ try:
     #get the current amount of seconds
     date = datetime.now()
     seconds = int(date.strftime("%S"))
-    minutes = int(date.strftime("%M"))+minuteOffset
-    hours = int(date.strftime("%H"))+hourOffset
+    minutes = int(date.strftime("%M"))+Offset[1]
+    hours = int(date.strftime("%H"))+Offset[0]
 
     if seconds > 59:
       minutes += 1
@@ -83,11 +86,12 @@ try:
     if GPIO.input(setPin) and not setDown:
       setDown = True
       if mode == "hour":
-        hourOffset = (hourOffset+1)%24
+        Offset[0] = (Offset[0]+1)%24
       elif mode == "minute":
-        minuteOffset = (minuteOffset+1)%60
+        Offset[1] = (Offset[1]+1)%60
 
-      print "current offset is %d:%d:00" % (hourOffset ,minuteOffset)
+      with open(SaveFile, 'w') as F:
+        json.dump(Offset, F)
     elif not GPIO.input(setPin):
       setDown = False
 
@@ -99,7 +103,6 @@ try:
         mode = "none"
       else:
         mode = "hour"
-
       print "setting %s" % mode
     elif not GPIO.input(modePin):
       modeDown = False
