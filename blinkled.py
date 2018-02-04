@@ -38,8 +38,11 @@ SaveFile = "saveFile"
 #time offsets
 Offset = [0, 0]
 
-with open(SaveFile, 'r') as F:
-  Offset = json.load(F)
+try:
+  with open(SaveFile, 'r') as F:
+    Offset = json.load(F)
+except IOError:
+  pass
 
 def displayBinary(pinArray, value):
   """convert number value"""
