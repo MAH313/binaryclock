@@ -1,6 +1,6 @@
 """code for the binary clock"""
 
-__version__ = 0.2
+__version__ = 1.0
 __author__ = "Mark Hongerkamp <mark313@live.nl>"
 
 from datetime import datetime
@@ -10,6 +10,7 @@ import RPi.GPIO as GPIO
 
 # Use board numbers, not GPIO numbers
 GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
 
 #active pins
 pins = [[8, 12, 18, 24, 29, 36],  #seconds
@@ -39,7 +40,7 @@ def displayBinary(pinArray, value):
 try:
   #startup check
   date = datetime.now()
-  print "start time is %s" % date.strftime("%H %M %S")
+  print "start time is %s" % date.strftime("%H:%M:%S")
 
   for i in xrange(0, len(pins)):
     for j in xrange(0, len(pins[i])):
@@ -47,6 +48,7 @@ try:
 
   time.sleep(1)
 
+  #start displaying time
   while True:
     #get the current amount of seconds
     date = datetime.now()
