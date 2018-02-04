@@ -87,6 +87,10 @@ try:
       elif mode == "minute":
         minuteOffset = (minuteOffset+1)%60
 
+      print "current offset is %d:%d:00" % (hourOffset ,minuteOffset)
+    elif not GPIO.input(setPin):
+      setDown = False
+
     if GPIO.input(modePin) and not modeDown:
       modeDown = True
       if mode == "hour":
@@ -95,6 +99,10 @@ try:
         mode = "none"
       else:
         mode = "hour"
+
+      print "setting %s" % mode
+    elif not GPIO.input(modePin):
+      modeDown = False
 
 
 except KeyboardInterrupt:
