@@ -12,20 +12,31 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 
-#active pins
+#led pins
 pins = [[8, 12, 18, 24, 29, 36],  #seconds
         [10, 16, 22, 26, 32, 38],  #minutes
         [3, 5, 7, 11, 13]]  #hours
-
-#time offsets
-secondOffset = 0
-minuteOffset = 0
-hourOffset = 0
 
 # set up the GPIO channels
 for i in xrange(0, len(pins)):
   for j in xrange(0, len(pins[i])):
     GPIO.setup(pins[i][j], GPIO.OUT)
+
+#button pins
+modePin = 19
+setPin = 21
+
+GPIO.setup(modePin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(setPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+modeDown = False
+setDown = False
+mode = "none"
+
+#time offsets
+minuteOffset = 0
+hourOffset = 0
+
+
 
 def displayBinary(pinArray, value):
   """convert number value"""
@@ -52,7 +63,7 @@ try:
   while True:
     #get the current amount of seconds
     date = datetime.now()
-    seconds = int(date.strftime("%S"))+secondOffset
+    seconds = int(date.strftime("%S"))
     minutes = int(date.strftime("%M"))+minuteOffset
     hours = int(date.strftime("%H"))+hourOffset
 
@@ -68,6 +79,23 @@ try:
     displayBinary(pins[0], seconds)
     displayBinary(pins[1], minutes)
     displayBinary(pins[2], hours)
+
+    if GPIO.input(setPin) and not setDown:
+      setDown = True
+      if mode == "hour":
+        hourOffset = (hourOffset+1)%24
+      elif mode == "minute":
+        minuteOffset = (minuteOffset+1)%60
+
+    if GPIO.input(modePin) and not modeDown:
+      modeDown = True
+      if mode == "hour":
+        mode = "minute"
+      elif mode == "minute":
+        mode = "none"
+      else:
+        mode = "hour"
+
 
 except KeyboardInterrupt:
   #clean and reset all gpio pins
