@@ -57,7 +57,7 @@ def displayBinary(pinArray, value):
 try:
   #startup check
   date = datetime.now()
-  print "start time is %s:%s:%s" % (date.strftime("%H")+Offset[0], date.strftime("%M")+Offset[1], date.strftime("%S"))
+  print "start time is %s:%s:%s" % (int(date.strftime("%H"))+Offset[0], int(date.strftime("%M"))+Offset[1], date.strftime("%S"))
 
   for i in xrange(0, len(pins)):
     for j in xrange(0, len(pins[i])):
