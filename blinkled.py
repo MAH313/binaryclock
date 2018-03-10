@@ -103,6 +103,8 @@ try:
 
     if GPIO.input(setPin) and GPIO.input(modePin):
       Offset = [0, 0]
+      with open(SaveFile, 'w') as F:
+          json.dump(Offset, F)
     else:
       if GPIO.input(setPin) and not setDown:
         setDown = True
