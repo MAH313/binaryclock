@@ -53,11 +53,18 @@ def displayBinary(pinArray, value):
     else:
       GPIO.output(pinArray[x], False)
 
+def displayOff(pinArray):
+  """turns all pins in pinArray off"""
+  for x in xrange(len(pinArray)-1, -1, -1):
+    GPIO.output(pinArray[x], False)
+
 #check for keyboardInterrupt
 try:
   #startup check
   date = datetime.now()
-  print "start time is %s:%s:%s" % (int(date.strftime("%H"))+Offset[0], int(date.strftime("%M"))+Offset[1], date.strftime("%S"))
+  print "start time is %s:%s:%s" % (int(date.strftime("%H"))+Offset[0],
+                                    int(date.strftime("%M"))+Offset[1],
+                                    date.strftime("%S"))
 
   for i in xrange(0, len(pins)):
     for j in xrange(0, len(pins[i])):
@@ -67,7 +74,7 @@ try:
 
   #start displaying time
   while True:
-    #get the current amount of seconds
+    #get the current amount of seconds, minutes and hours
     date = datetime.now()
     seconds = int(date.strftime("%S"))
     minutes = int(date.strftime("%M"))+Offset[1]
@@ -81,34 +88,45 @@ try:
       minutes = minutes % 60
     hours = hours % 24
 
-    #convert seconds to binary display
+    #convert time to binary display
     displayBinary(pins[0], seconds)
-    displayBinary(pins[1], minutes)
-    displayBinary(pins[2], hours)
 
-    if GPIO.input(setPin) and not setDown:
-      setDown = True
-      if mode == "hour":
-        Offset[0] = (Offset[0]+1)%24
-      elif mode == "minute":
-        Offset[1] = (Offset[1]+1)%60
+    if mode != "minute":
+      displayBinary(pins[1], minutes)
+    elif seconds%2:
+      displayOff(pins[1])
 
-      with open(SaveFile, 'w') as F:
-        json.dump(Offset, F)
-    elif not GPIO.input(setPin):
-      setDown = False
+    if mode != "hour":
+      displayBinary(pins[1], minutes)
+    elif seconds%2:
+      displayOff(pins[1])
 
-    if GPIO.input(modePin) and not modeDown:
-      modeDown = True
-      if mode == "hour":
-        mode = "minute"
-      elif mode == "minute":
-        mode = "none"
-      else:
-        mode = "hour"
-      print "setting %s" % mode
-    elif not GPIO.input(modePin):
-      modeDown = False
+    if GPIO.input(setPin) and GPIO.input(modePin):
+      Offset = [0, 0]
+    else:
+      if GPIO.input(setPin) and not setDown:
+        setDown = True
+        if mode == "hour":
+          Offset[0] = (Offset[0]+1)%24
+        elif mode == "minute":
+          Offset[1] = (Offset[1]+1)%60
+
+        with open(SaveFile, 'w') as F:
+          json.dump(Offset, F)
+      elif not GPIO.input(setPin):
+        setDown = False
+
+      if GPIO.input(modePin) and not modeDown:
+        modeDown = True
+        if mode == "hour":
+          mode = "minute"
+        elif mode == "minute":
+          mode = "none"
+        else:
+          mode = "hour"
+        print "setting %s" % mode
+      elif not GPIO.input(modePin):
+        modeDown = False
 
 
 except KeyboardInterrupt:
