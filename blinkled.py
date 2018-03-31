@@ -61,13 +61,6 @@ def displayOff(pinArray):
 
 #check for keyboardInterrupt
 try:
-  if __name__ == '__main__':
-    # if this script is called from the command line
-    parser = optparse.OptionParser()
-    parser.add_option('-c', action="store_true", dest="cycleMode", default=False)
-    parser.add_option('-b', action="store", dest="brightness", default=10)
-    options, remainder = parser.parse_args()
-
   #startup check
   date = datetime.now()
   print "start time is %s:%s:%s" % (int(date.strftime("%H"))+Offset[0],
@@ -83,7 +76,7 @@ try:
   # pbm logic preparation
   cycles = 0
   timeCycle = 0
-  brightness = options.brightness #0-20, 0 = off 20 = max
+  brightness = 10 #0-20, 0 = off 20 = max
   lastDate = datetime.now()
 
   #start displaying time
@@ -95,7 +88,7 @@ try:
     hours = int(date.strftime("%H"))+Offset[0]
 
     timedelta = date-lastDate #time between cycles
-    dt = timedelta.microseconds/1000 #delta time in micro
+    dt = timedelta.microseconds/1000 #delta time in milliseconds
     lastDate = date
 
     if seconds > 59:
@@ -108,7 +101,8 @@ try:
 
     #convert time to binary display
     #various pbm testing calculations
-    cycles = (cycles+1)%20 if options.cycleMode else (cycles+dt)%20
+    cycles = (cycles+1)%20
+    timeCycle = (timeCycle+dt)%20
 
     if brightness > cycles:
       displayBinary(pins[0], seconds)
