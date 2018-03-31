@@ -72,6 +72,8 @@ try:
 
   time.sleep(1)
 
+  PBMOn = False;
+
   #start displaying time
   while True:
     #get the current amount of seconds, minutes and hours
@@ -89,24 +91,35 @@ try:
     hours = hours % 24
 
     #convert time to binary display
-    displayBinary(pins[0], seconds)
 
-    if mode != "minute" or not seconds%2:
-      displayBinary(pins[1], minutes)
-    elif seconds%2:
+    PBMOn = not PBMOn
+
+    if PBMOn:
+      displayBinary(pins[0], seconds)
+
+      if mode != "minute" or not seconds%2:
+        displayBinary(pins[1], minutes)
+      elif seconds%2:
+        displayOff(pins[1])
+
+      if mode != "hour" or not seconds%2:
+        displayBinary(pins[2], hours)
+      elif seconds%2:
+        displayOff(pins[2])
+    else:
+      displayOff(pins[0])
       displayOff(pins[1])
-
-    if mode != "hour" or not seconds%2:
-      displayBinary(pins[2], hours)
-    elif seconds%2:
       displayOff(pins[2])
 
     if GPIO.input(setPin) and GPIO.input(modePin):
+      # ofset reset
       Offset = [0, 0]
       with open(SaveFile, 'w') as F:
           json.dump(Offset, F)
+      print "offset reset"
     else:
       if GPIO.input(setPin) and not setDown:
+        # ofset adding
         setDown = True
         if mode == "hour":
           Offset[0] = (Offset[0]+1)%24
@@ -119,6 +132,7 @@ try:
         setDown = False
 
       if GPIO.input(modePin) and not modeDown:
+        # mode switch
         modeDown = True
         if mode == "hour":
           mode = "minute"
