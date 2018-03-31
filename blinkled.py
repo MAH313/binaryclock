@@ -102,6 +102,8 @@ try:
       minutes = minutes % 60
     hours = hours % 24
 
+    wait(10-brightness)
+
     # on
     displayBinary(pins[0], seconds)
 
@@ -121,8 +123,6 @@ try:
     displayOff(pins[0])
     displayOff(pins[1])
     displayOff(pins[2])
-
-    wait(8-brightness)
 
     #setting functionality
 
