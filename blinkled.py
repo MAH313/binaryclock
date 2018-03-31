@@ -72,7 +72,9 @@ try:
 
   time.sleep(1)
 
-  PBMOn = False;
+  # pbm logic preparation
+  cycles = 0
+  brightness = 1 #0-10, 0 = off 10 = max
 
   #start displaying time
   while True:
@@ -91,10 +93,9 @@ try:
     hours = hours % 24
 
     #convert time to binary display
+    cycles = (cycles+1)%10
 
-    PBMOn = not PBMOn
-
-    if PBMOn:
+    if brightness > cycles:
       displayBinary(pins[0], seconds)
 
       if mode != "minute" or not seconds%2:
