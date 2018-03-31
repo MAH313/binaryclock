@@ -87,7 +87,8 @@ try:
 
     timedelta = date-lastDate #time between cycles
     dt = timedelta.microseconds #delta time in microseconds
-
+    lastDate = date
+    
     print dt
 
     if seconds > 59:
