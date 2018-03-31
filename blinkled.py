@@ -91,12 +91,12 @@ try:
     #convert time to binary display
     displayBinary(pins[0], seconds)
 
-    if mode != "minute":
+    if mode != "minute" or not seconds%2:
       displayBinary(pins[1], minutes)
     elif seconds%2:
       displayOff(pins[1])
 
-    if mode != "hour":
+    if mode != "hour" or not seconds%2:
       displayBinary(pins[2], hours)
     elif seconds%2:
       displayOff(pins[2])
