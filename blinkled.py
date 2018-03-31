@@ -8,7 +8,6 @@ import time
 import math
 import json
 import RPi.GPIO as GPIO
-import optparse
 
 # Use board numbers, not GPIO numbers
 GPIO.setmode(GPIO.BOARD)
@@ -84,8 +83,6 @@ try:
   time.sleep(1)
 
   # pbm logic preparation
-  cycles = 0
-  timeCycle = 0
   brightness = 5 #0-20, 0 = off 20 = max
   lastDate = datetime.now()
 
@@ -96,10 +93,6 @@ try:
     seconds = int(date.strftime("%S"))
     minutes = int(date.strftime("%M"))+Offset[1]
     hours = int(date.strftime("%H"))+Offset[0]
-
-    timedelta = date-lastDate #time between cycles
-    dt = timedelta.microseconds/1000 #delta time in milliseconds
-    lastDate = date
 
     if seconds > 59:
       minutes += 1
