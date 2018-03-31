@@ -74,7 +74,8 @@ try:
 
   # pbm logic preparation
   cycles = 0
-  brightness = 1 #0-10, 0 = off 10 = max
+  timeCycle = 0
+  brightness = 50 #0-10, 0 = off 10 = max
   lastDate = datetime.now()
 
   #start displaying time
@@ -86,10 +87,8 @@ try:
     hours = int(date.strftime("%H"))+Offset[0]
 
     timedelta = date-lastDate #time between cycles
-    dt = timedelta.microseconds #delta time in microseconds
+    dt = timedelta.microseconds/1000 #delta time in milliseconds
     lastDate = date
-    
-    print dt
 
     if seconds > 59:
       minutes += 1
@@ -100,9 +99,11 @@ try:
     hours = hours % 24
 
     #convert time to binary display
+    #various pbm testing calculations
     cycles = (cycles+1)%10
+    timeCycle = (timeCycle+dt)%100
 
-    if brightness > cycles:
+    if brightness > timeCycle:
       displayBinary(pins[0], seconds)
 
       if mode != "minute" or not seconds%2:
