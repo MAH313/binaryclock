@@ -50,7 +50,7 @@ def wait(ms):
 
   while ms > 0:
     thisdate = datetime.now()
-    ms = ms - ((thatdate - thisdate).microseconds/1000)
+    ms = ms - ((thisdate - thatdate).microseconds/1000.0)
     thatdate = thisdate
 
 
