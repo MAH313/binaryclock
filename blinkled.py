@@ -83,7 +83,7 @@ try:
   # pbm logic preparation
   cycles = 0
   timeCycle = 0
-  brightness = 10 #0-20, 0 = off 20 = max
+  brightness = options.brightness #0-20, 0 = off 20 = max
   lastDate = datetime.now()
 
   #start displaying time
@@ -108,8 +108,7 @@ try:
 
     #convert time to binary display
     #various pbm testing calculations
-    cycles = (cycles+1)%20
-    timeCycle = (timeCycle+dt)%20
+    cycles = (cycles+1)%20 if options.cycleMode else (cycles+dt)%20
 
     if brightness > cycles:
       displayBinary(pins[0], seconds)
