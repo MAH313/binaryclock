@@ -103,6 +103,8 @@ try:
     cycles = (cycles+1)%10
     timeCycle = (timeCycle+dt)%100
 
+    print timeCycle
+
     if brightness > timeCycle:
       displayBinary(pins[0], seconds)
 
