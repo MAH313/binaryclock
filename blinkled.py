@@ -8,6 +8,7 @@ import time
 import math
 import json
 import RPi.GPIO as GPIO
+import optparse
 
 # Use board numbers, not GPIO numbers
 GPIO.setmode(GPIO.BOARD)
@@ -60,6 +61,13 @@ def displayOff(pinArray):
 
 #check for keyboardInterrupt
 try:
+  if __name__ == '__main__':
+    # if this script is called from the command line
+    parser = optparse.OptionParser()
+    parser.add_option('-c', action="store_true", dest="cycleMode", default=False)
+    parser.add_option('-b', action="store", dest="brightness", default=10)
+    options, remainder = parser.parse_args()
+
   #startup check
   date = datetime.now()
   print "start time is %s:%s:%s" % (int(date.strftime("%H"))+Offset[0],
@@ -75,7 +83,7 @@ try:
   # pbm logic preparation
   cycles = 0
   timeCycle = 0
-  brightness = 10 #0-10, 0 = off 10 = max
+  brightness = 10 #0-20, 0 = off 20 = max
   lastDate = datetime.now()
 
   #start displaying time
