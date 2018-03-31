@@ -45,6 +45,15 @@ try:
 except IOError:
   pass
 
+def wait(ms):
+  thatdate = datetime.now()
+  """wait for ms microseconds"""
+  while ms > 0:
+    thisdate = datetime.now()
+    ms = ms - ((thatdate - thisdate).microseconds/1000)
+    thatdate = this date
+
+
 def displayBinary(pinArray, value):
   """convert number value"""
   for x in xrange(len(pinArray)-1, -1, -1):
@@ -76,7 +85,7 @@ try:
   # pbm logic preparation
   cycles = 0
   timeCycle = 0
-  brightness = 10 #0-20, 0 = off 20 = max
+  brightness = 5 #0-20, 0 = off 20 = max
   lastDate = datetime.now()
 
   #start displaying time
@@ -99,27 +108,27 @@ try:
       minutes = minutes % 60
     hours = hours % 24
 
-    #convert time to binary display
-    #various pbm testing calculations
-    cycles = (cycles+1)%20
-    timeCycle = (timeCycle+dt)%20
+    # on
+    wait(brightness)
 
-    if brightness > cycles:
-      displayBinary(pins[0], seconds)
+    displayBinary(pins[0], seconds)
 
-      if mode != "minute" or not seconds%2:
-        displayBinary(pins[1], minutes)
-      elif seconds%2:
-        displayOff(pins[1])
-
-      if mode != "hour" or not seconds%2:
-        displayBinary(pins[2], hours)
-      elif seconds%2:
-        displayOff(pins[2])
-    else:
-      displayOff(pins[0])
+    if mode != "minute" or not seconds%2:
+      displayBinary(pins[1], minutes)
+    elif seconds%2:
       displayOff(pins[1])
+
+    if mode != "hour" or not seconds%2:
+      displayBinary(pins[2], hours)
+    elif seconds%2:
       displayOff(pins[2])
+
+    wait(10-brightness)
+
+    #off
+    displayOff(pins[0])
+    displayOff(pins[1])
+    displayOff(pins[2])
 
     #setting functionality
 
