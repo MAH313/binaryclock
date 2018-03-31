@@ -75,6 +75,7 @@ try:
   # pbm logic preparation
   cycles = 0
   brightness = 1 #0-10, 0 = off 10 = max
+  lastDate = datetime.now()
 
   #start displaying time
   while True:
@@ -83,6 +84,11 @@ try:
     seconds = int(date.strftime("%S"))
     minutes = int(date.strftime("%M"))+Offset[1]
     hours = int(date.strftime("%H"))+Offset[0]
+
+    timedelta = date-lastDate #time between cycles
+    dt = timedelta.microseconds #delta time in microseconds
+
+    print dt
 
     if seconds > 59:
       minutes += 1
@@ -111,6 +117,8 @@ try:
       displayOff(pins[0])
       displayOff(pins[1])
       displayOff(pins[2])
+
+    #setting functionality
 
     if GPIO.input(setPin) and GPIO.input(modePin):
       # ofset reset
