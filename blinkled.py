@@ -46,8 +46,9 @@ except IOError:
   pass
 
 def wait(ms):
-  thatdate = datetime.now()
   """wait for ms microseconds"""
+  thatdate = datetime.now()
+
   while ms > 0:
     thisdate = datetime.now()
     ms = ms - ((thatdate - thisdate).microseconds/1000)
@@ -109,8 +110,6 @@ try:
     hours = hours % 24
 
     # on
-    wait(brightness)
-
     displayBinary(pins[0], seconds)
 
     if mode != "minute" or not seconds%2:
@@ -123,12 +122,14 @@ try:
     elif seconds%2:
       displayOff(pins[2])
 
-    wait(10-brightness)
+    wait(brightness)
 
     #off
     displayOff(pins[0])
     displayOff(pins[1])
     displayOff(pins[2])
+
+    wait(8-brightness)
 
     #setting functionality
 
