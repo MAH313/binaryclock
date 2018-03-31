@@ -97,9 +97,9 @@ try:
       displayOff(pins[1])
 
     if mode != "hour":
-      displayBinary(pins[1], minutes)
+      displayBinary(pins[2], hours)
     elif seconds%2:
-      displayOff(pins[1])
+      displayOff(pins[2])
 
     if GPIO.input(setPin) and GPIO.input(modePin):
       Offset = [0, 0]
