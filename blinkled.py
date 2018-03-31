@@ -51,7 +51,7 @@ def wait(ms):
   while ms > 0:
     thisdate = datetime.now()
     ms = ms - ((thatdate - thisdate).microseconds/1000)
-    thatdate = this date
+    thatdate = thisdate
 
 
 def displayBinary(pinArray, value):
