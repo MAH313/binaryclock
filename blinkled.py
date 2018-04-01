@@ -88,9 +88,8 @@ try:
 
   time.sleep(1)
 
-  # pbm logic preparation
-  brightness = 5 #0-20, 0 = off 20 = max
-  lastDate = datetime.now()
+  # brightness
+  brightness = config['brightness']['default']
 
   #start displaying time
   while True:
@@ -110,20 +109,21 @@ try:
 
     wait(10-brightness)
 
-    # on
-    displayBinary(pins[0], seconds)
+    if brightness > 0:
+      # on
+      displayBinary(pins[0], seconds)
 
-    if mode != "minute" or not seconds%2:
-      displayBinary(pins[1], minutes)
-    elif seconds%2:
-      displayOff(pins[1])
+      if mode != "minute" or not seconds%2:
+        displayBinary(pins[1], minutes)
+      elif seconds%2:
+        displayOff(pins[1])
 
-    if mode != "hour" or not seconds%2:
-      displayBinary(pins[2], hours)
-    elif seconds%2:
-      displayOff(pins[2])
+      if mode != "hour" or not seconds%2:
+        displayBinary(pins[2], hours)
+      elif seconds%2:
+        displayOff(pins[2])
 
-    wait(brightness)
+      wait(brightness)
 
     #off
     displayOff(pins[0])
