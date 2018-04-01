@@ -14,6 +14,20 @@ import RPi.GPIO as GPIO
 config = ConfigParser.ConfigParser()
 config.read('config.ini')
 
+# load all config settings
+brightness = {
+    'default': int(config.get('brightness', 'default'))
+}
+lightSensor = {
+    'enabled': True if config.get('lightSensor', 'enabled') == 'yes' else False,
+    'pin1': int(config.get('lightSensor', 'pin1')),
+    'pin2': int(config.get('lightSensor', 'pin2')),
+    'level0': int(config.get('lightSensor', 'level0')),
+    'level1': int(config.get('lightSensor', 'level1')),
+    'level2': int(config.get('lightSensor', 'level2'))
+}
+
+
 # Use board numbers, not GPIO numbers
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
@@ -38,6 +52,11 @@ GPIO.setup(setPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 modeDown = False
 setDown = False
 mode = "none"
+
+#lightsensor init
+if lightSensor['enabled']:
+  GPIO.setup(lightSensor['pin1'], GPIO.IN)
+  GPIO.setup(lightSensor['pin2'], GPIO.IN)
 
 #save file name
 SaveFile = "saveFile"
@@ -88,9 +107,6 @@ try:
 
   time.sleep(1)
 
-  # brightness
-  brightness = int(config.get('brightness', 'default'))
-
   #start displaying time
   while True:
     #get the current amount of seconds, minutes and hours
@@ -98,6 +114,17 @@ try:
     seconds = int(date.strftime("%S"))
     minutes = int(date.strftime("%M"))+Offset[1]
     hours = int(date.strftime("%H"))+Offset[0]
+
+    
+    if lightSensor['enabled']:
+      if GPIO.input(lightSensor['pin1']) and GPIO.input(lightSensor['pin2']):
+        PBMOnTime = lightSensor['level2']
+      elif GPIO.input(lightSensor['pin1']):
+        PBMOnTime = lightSensor['level1']
+      else:
+        PBMOnTime = lightSensor['level0']
+    else:
+      PBMOnTime = brightness['default']
 
     if seconds > 59:
       minutes += 1
@@ -107,9 +134,9 @@ try:
       minutes = minutes % 60
     hours = hours % 24
 
-    wait(10-brightness)
+    wait(10-PBMOnTime)
 
-    if brightness > 0:
+    if PBMOnTime > 0:
       # on
       displayBinary(pins[0], seconds)
 
@@ -123,7 +150,7 @@ try:
       elif seconds%2:
         displayOff(pins[2])
 
-      wait(brightness)
+      wait(PBMOnTime)
 
     #off
     displayOff(pins[0])
