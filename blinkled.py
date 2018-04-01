@@ -8,6 +8,11 @@ import time
 import math
 import json
 import RPi.GPIO as GPIO
+import configparser
+
+#load the config
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 # Use board numbers, not GPIO numbers
 GPIO.setmode(GPIO.BOARD)
@@ -27,12 +32,14 @@ for i in xrange(0, len(pins)):
 modePin = 19
 setPin = 21
 
+#button initialisation
 GPIO.setup(modePin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(setPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 modeDown = False
 setDown = False
 mode = "none"
 
+#save file name
 SaveFile = "saveFile"
 
 #time offsets
@@ -47,7 +54,6 @@ except IOError:
 def wait(ms):
   """wait for ms microseconds"""
   thatdate = datetime.now()
-
   while ms > 0:
     thisdate = datetime.now()
     ms = ms - ((thisdate - thatdate).microseconds/1000.0)
@@ -55,7 +61,7 @@ def wait(ms):
 
 
 def displayBinary(pinArray, value):
-  """convert number value"""
+  """convert number value to the display"""
   for x in xrange(len(pinArray)-1, -1, -1):
     if value >= (math.pow(2, x) or 1):
       GPIO.output(pinArray[x], True)
@@ -72,8 +78,8 @@ def displayOff(pinArray):
 try:
   #startup check
   date = datetime.now()
-  print "start time is %s:%s:%s" % (int(date.strftime("%H"))+Offset[0],
-                                    int(date.strftime("%M"))+Offset[1],
+  print "start time is %s:%s:%s" % (int(date.strftime("%H"))+Offset[0]%24,
+                                    int(date.strftime("%M"))+Offset[1]%60,
                                     date.strftime("%S"))
 
   for i in xrange(0, len(pins)):
