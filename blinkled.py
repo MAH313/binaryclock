@@ -12,7 +12,7 @@ import RPi.GPIO as GPIO
 
 #load the config
 config = ConfigParser.ConfigParser()
-config.read('config.ini')
+config.read('/home/pi/binaryclock/config.ini')
 
 # load all config settings
 brightness = {
