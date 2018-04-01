@@ -7,11 +7,11 @@ from datetime import datetime
 import time
 import math
 import json
+import ConfigParser
 import RPi.GPIO as GPIO
-import configparser
 
 #load the config
-config = configparser.ConfigParser()
+config = ConfigParser.ConfigParser()
 config.read('config.ini')
 
 # Use board numbers, not GPIO numbers
@@ -89,7 +89,7 @@ try:
   time.sleep(1)
 
   # brightness
-  brightness = config['brightness']['default']
+  brightness = config.get('brightness', 'default')
 
   #start displaying time
   while True:
