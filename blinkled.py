@@ -89,7 +89,7 @@ try:
   time.sleep(1)
 
   # brightness
-  brightness = config.get('brightness', 'default')
+  brightness = int(config.get('brightness', 'default'))
 
   #start displaying time
   while True:
