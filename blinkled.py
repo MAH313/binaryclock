@@ -117,13 +117,13 @@ try:
 
     if lightSensor['enabled']:
       if GPIO.input(lightSensor['pin1']) and GPIO.input(lightSensor['pin2']):
-        PBMOnTime = lightSensor['level2']
+        PWMOnTime = lightSensor['level2']
       elif GPIO.input(lightSensor['pin1']):
-        PBMOnTime = lightSensor['level1']
+        PWMOnTime = lightSensor['level1']
       else:
-        PBMOnTime = lightSensor['level0']
+        PWMOnTime = lightSensor['level0']
     else:
-      PBMOnTime = brightness['default']
+      PWMOnTime = brightness['default']
 
     if seconds > 59:
       minutes += 1
@@ -133,9 +133,9 @@ try:
       minutes = minutes % 60
     hours = hours % 24
 
-    wait(10-PBMOnTime)
+    wait(20-PWMOnTime)
 
-    if PBMOnTime > 0:
+    if PWMOnTime > 0:
       # on
       displayBinary(pins[0], seconds)
 
@@ -149,7 +149,7 @@ try:
       elif seconds%2:
         displayOff(pins[2])
 
-      wait(PBMOnTime)
+      wait(PWMOnTime)
 
     #off
     displayOff(pins[0])
