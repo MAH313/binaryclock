@@ -115,7 +115,6 @@ try:
     minutes = int(date.strftime("%M"))+Offset[1]
     hours = int(date.strftime("%H"))+Offset[0]
 
-    
     if lightSensor['enabled']:
       if GPIO.input(lightSensor['pin1']) and GPIO.input(lightSensor['pin2']):
         PBMOnTime = lightSensor['level2']
@@ -188,7 +187,6 @@ try:
           mode = "none"
         else:
           mode = "hour"
-        print "setting %s" % mode
       elif not GPIO.input(modePin):
         modeDown = False
 
