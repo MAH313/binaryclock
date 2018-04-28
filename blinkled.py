@@ -12,7 +12,7 @@ import RPi.GPIO as GPIO
 
 #load the config
 config = ConfigParser.ConfigParser()
-config.read('/home/pi/binaryclock/config.ini')
+config.read('/home/pi/config.ini')
 
 # load all config settings
 brightness = {
@@ -116,9 +116,11 @@ try:
     hours = int(date.strftime("%H"))+Offset[0]
 
     if lightSensor['enabled']:
-      if not GPIO.input(lightSensor['pin1']) and not GPIO.input(lightSensor['pin2']):
+      if(not GPIO.input(lightSensor['pin1']) and
+	 not GPIO.input(lightSensor['pin2'])):
         PWMOnTime = lightSensor['level2']
-      elif not GPIO.input(lightSensor['pin1']):
+      elif(not GPIO.input(lightSensor['pin2']) and 
+	   GPIO.input(lightSensor['pin1'])):
         PWMOnTime = lightSensor['level1']
       else:
         PWMOnTime = lightSensor['level0']
